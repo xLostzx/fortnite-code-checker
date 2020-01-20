@@ -28,7 +28,7 @@ var (
 	TxtFile string
 	//FnCode a single code to check
 	FnCode string
-	//CkURL djfh
+	//CkURL an url
 	CkURL string
 )
 
@@ -43,25 +43,30 @@ var (
 	line8  = "	 ░ ░       ░   ░ ░ ░         ░  ░░ ░   ░   ░        ░ ░░ ░\n"
 	line9  = "	                 ░ ░ ░       ░  ░  ░   ░  ░░ ░      ░  ░\n"
 	line10 = "	                   ░                       ░\n"
+	logo   = line1 + line2 + line3 + line4 + line5 + line6 + line7 + line8 + line9 + line10
 )
 
-var logger = log.Logger{Name: "CHECKER", Format: "[{{type}}@{{name}}]: {{message}}", Level: "debug", Print: true}
+var logger = log.Logger{Name: "CHECKER", Format: "[{{type}}@{{name}}]: {{message}}", Level: "info", Print: true}
 
 func init() {
 	//logo
 	logger.Raw("\n\n")
-	logger.Raw(line1 + line2 + line3 + line4 + line5 + line6 + line7 + line8 + line9 + line10)
+	logger.Raw(logo)
 	logger.Raw("				by zSnails ~~")
 	//end of logo
-	flag.StringVar(&TxtFile, "f", "", "The file containing each code")
+	flag.StringVar(&TxtFile, "f", "codes.txt", "The file containing each code")
 	flag.StringVar(&FnCode, "c", "", "Check a single code")
 	flag.Parse()
 }
 
 func main() {
 	for {
-		fmt.Printf("help for help> ")
-		checkInput()
+		fmt.Printf("fnchecker> ")
+		err := checkInput()
+		if err != nil {
+			logger.Debug("%v", err)
+		}
+		//continue
 	}
 
 }

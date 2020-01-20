@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func parseInput(input string) {
+func parseInput(input string) error {
 	var osSplitter string
 	if runtime.GOOS == "windows" {
 		osSplitter = "\\"
@@ -21,39 +21,45 @@ func parseInput(input string) {
 	}
 	inputCode := strings.SplitN(input, ":", -1)
 	if string(inputCode[0]) == "file" {
+		if len(inputCode) == 0 {
+			logger.Error("Either the file doesn't exist or you didn't specify one.")
+		}
 		filePath := (dir + osSplitter + inputCode[1])
 		data, err := ioutil.ReadFile(filePath)
-		println(string(data))
 		if err != nil {
 			logger.Critical("Either the file doesn't exist or you didn't specify one.")
 		}
 		s := string(data)
 		arr := strings.SplitN(s, "\n", -1)
 		checkCodes(arr)
-		return
+		return nil
 	}
 
 	if string(inputCode[0]) == "code" {
 		checkCode(string(inputCode[1]))
-		return
+		return nil
 	}
 
 	switch input {
 	case "help":
 		logger.Raw(helpText)
-		return
+		break
 	case "exit", "done":
 		os.Exit(1)
-		return
+		break
 	default:
 		fmt.Printf("\n")
-		fmt.Printf("fnchecker> ")
-		return
+		break
 	}
+	return nil
 }
 
-func checkInput() {
+func checkInput() error {
 	var input string
 	fmt.Scanf("%v", &input)
-	parseInput(input)
+	err := parseInput(input)
+	if err != nil {
+		return err
+	}
+	return nil
 }
